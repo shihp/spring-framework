@@ -75,12 +75,19 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 
 	/** Cache of singleton objects: bean name to bean instance. */
+	// 单例对象的缓存：bean名到bean实例
+	// 一级缓存
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
 	/** Cache of singleton factories: bean name to ObjectFactory. */
+	// 单例工厂缓存：将bean名称转换为ObjectFactory。
+	// 三级缓存
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** Cache of early singleton objects: bean name to bean instance. */
+	// 早期单例对象的缓存：bean名到bean实例。；
+	// 与singletonFactories/三级缓存不同指出在于，当一个单例bean被放到这里之后，那么当bean还在创建过程中，就可以通过getBean方法获取到，方便进行循环依赖的检测
+	// 二级缓存
 	private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
 
 	/** Set of registered singletons, containing the bean names in registration order. */
@@ -144,6 +151,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 如有必要，添加给定的单例工厂以生成指定的单例<p> 被要求立即登记单身人士，例如能够
+	 *
 	 * Add the given singleton factory for building the specified singleton
 	 * if necessary.
 	 * <p>To be called for eager registration of singletons, e.g. to be able to
@@ -155,6 +164,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
+				// 先放到三级缓存
 				this.singletonFactories.put(beanName, singletonFactory);
 				this.earlySingletonObjects.remove(beanName);
 				this.registeredSingletons.add(beanName);
@@ -204,6 +214,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
+	 * 返回在给定名称下注册的（原始）单例对象，如果尚未注册，则创建并注册一个新的单例对象。
 	 * Return the (raw) singleton object registered under the given name,
 	 * creating and registering a new one if none registered yet.
 	 * @param beanName the name of the bean
@@ -251,11 +262,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					throw ex;
 				}
 				finally {
+					//记录抑制异常
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+					// 移除缓存中对该bean的正在加载状态的记录
+					// after一定对应的有before
 					afterSingletonCreation(beanName);
 				}
+				// 加入一级缓存中
 				if (newSingleton) {
 					addSingleton(beanName, singletonObject);
 				}
@@ -370,6 +385,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 
 
 	/**
+	 * 将给定的bean添加到此注册表中的一次性bean列表
+	 * <p> 一次性bean通常对应于已注册的单例，与bean名称匹配，但可能是不同的实例（例如，单例的DisposableBean适配器并不自然实现Spring的DisposableBean接口）。
 	 * Add the given bean to the list of disposable beans in this registry.
 	 * <p>Disposable beans usually correspond to registered singletons,
 	 * matching the bean name but potentially being a different instance

@@ -12,4 +12,9 @@
 <!--		<property name="car" ref="car"></property>-->
 <!--	</bean>-->
 
+	<bean id="person" class="com.shihp.Person">
+		<property name="id" value="1"/>
+		<property name="name" value="shihp"/>
+	</bean>
+
 </beans>
