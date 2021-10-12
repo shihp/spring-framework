@@ -64,9 +64,11 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext {
 
+	// 允许Bean定义重写
 	@Nullable
 	private Boolean allowBeanDefinitionOverriding;
 
+	// 允许循环引用
 	@Nullable
 	private Boolean allowCircularReferences;
 
@@ -101,6 +103,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/**
+	 * 允许循环引用
+	 * 设置是否允许bean之间的循环引用-并自动
+	 * <p>默认值为“true”。禁用此选项可在遇到循环引用时引发异常，完全不允许它们。
 	 * Set whether to allow circular references between beans - and automatically
 	 * try to resolve them.
 	 * <p>Default is "true". Turn this off to throw an exception when encountering
@@ -120,17 +125,19 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 如果存在beanFactory 销毁
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
+			// 创建DefaultListableBeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			//序列化id
 			beanFactory.setSerializationId(getId());
 			//设置自定义信息
 			customizeBeanFactory(beanFactory);
-			//加载bean信息(beanDefinitionMap
+			//加载bean信息(beanDefinitionMap （适配器模式）
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -199,6 +206,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 */
 	protected DefaultListableBeanFactory createBeanFactory() {
+		//getInternalParentBeanFactory 获取内部的父类
 		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
 	}
 

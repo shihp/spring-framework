@@ -48,9 +48,12 @@ import org.springframework.web.context.request.SessionScope;
 import org.springframework.web.context.request.WebRequest;
 
 /**
+ * 检索给定{@link ServletContext}的根{@link WebApplicationContext}的方便方法。这对于从自定义web视图或MVC操作中以编程方式访问Spring应用程序上下文非常有用。
  * Convenience methods for retrieving the root {@link WebApplicationContext} for
  * a given {@link ServletContext}. This is useful for programmatically accessing
  * a Spring application context from within custom web views or MVC actions.
+ *
+ * <p>注意，对于许多web框架，有更方便的方法访问根上下文，可以是Spring的一部分，也可以作为外部库提供。这个helper类只是访问根上下文的最通用的方法。
  *
  * <p>Note that there are more convenient ways of accessing the root context for
  * many web frameworks, either part of Spring or available as an external library.

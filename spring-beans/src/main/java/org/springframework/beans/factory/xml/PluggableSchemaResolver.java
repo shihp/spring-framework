@@ -71,12 +71,14 @@ public class PluggableSchemaResolver implements EntityResolver {
 
 	private final String schemaMappingsLocation;
 
+	// 存储架构URL->本地架构路径的映射。
 	/** Stores the mapping of schema URL -> local schema path. */
 	@Nullable
 	private volatile Map<String, String> schemaMappings;
 
 
 	/**
+	 * 使用默认值加载架构URL->架构文件位置映射
 	 * Loads the schema URL -> schema file location mappings using the default
 	 * mapping file pattern "META-INF/spring.schemas".
 	 * @param classLoader the ClassLoader to use for loading
@@ -142,6 +144,7 @@ public class PluggableSchemaResolver implements EntityResolver {
 	}
 
 	/**
+	 * 延迟加载指定的架构映射。
 	 * Load the specified schema mappings lazily.
 	 */
 	private Map<String, String> getSchemaMappings() {
@@ -174,9 +177,11 @@ public class PluggableSchemaResolver implements EntityResolver {
 	}
 
 
+	// 打印
 	@Override
 	public String toString() {
 		return "EntityResolver using schema mappings " + getSchemaMappings();
+//		return "EntityResolver using schema mappings " + "";
 	}
 
 }

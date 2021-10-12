@@ -250,6 +250,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
+	 * 设置用于解析的SAX实体解析器。
+	 * <p>默认情况下，将使用{@link ResourceEntityResolver}。可以为自定义实体解析而重写，例如相对于某些特定的基本路径。
 	 * Set a SAX entity resolver to be used for parsing.
 	 * <p>By default, {@link ResourceEntityResolver} will be used. Can be overridden
 	 * for custom entity resolution, for example relative to some specific base path.
