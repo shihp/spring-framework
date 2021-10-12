@@ -40,8 +40,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
+ * Cglib子类化实例化策略
+ * BeanFactory中使用的默认对象实例化策略。
  * Default object instantiation strategy for use in BeanFactories.
  *
+ * 如果容器需要重写方法以实现<em>方法注入<em>，则使用CGLIB动态生成子类。
  * <p>Uses CGLIB to generate subclasses dynamically if methods need to be
  * overridden by the container to implement <em>Method Injection</em>.
  *

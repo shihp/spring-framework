@@ -262,6 +262,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	}
 
 	/**
+	 * 返回此资源模式解析程序使用的路径匹配器。
 	 * Return the PathMatcher that this resource pattern resolver uses.
 	 */
 	public PathMatcher getPathMatcher() {

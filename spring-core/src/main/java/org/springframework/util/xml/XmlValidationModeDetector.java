@@ -81,6 +81,8 @@ public class XmlValidationModeDetector {
 
 
 	/**
+	 * 返回xml 格式类型  dtd xsd
+	 * 在提供的{@link InputStream}中检测XML文档的验证模式。请注意，提供的{@link InputStream}在返回之前由该方法关闭。
 	 * Detect the validation mode for the XML document in the supplied {@link InputStream}.
 	 * Note that the supplied {@link InputStream} is closed by this method before returning.
 	 * @param inputStream the InputStream to parse
@@ -92,6 +94,7 @@ public class XmlValidationModeDetector {
 		// Peek into the file to look for DOCTYPE.
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
+			//dtd
 			boolean isDtdValidated = false;
 			String content;
 			while ((content = reader.readLine()) != null) {

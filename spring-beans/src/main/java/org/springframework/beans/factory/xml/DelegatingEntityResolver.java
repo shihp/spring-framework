@@ -61,7 +61,9 @@ public class DelegatingEntityResolver implements EntityResolver {
 	 * (can be {@code null}) to use the default ClassLoader)
 	 */
 	public DelegatingEntityResolver(@Nullable ClassLoader classLoader) {
+		//dtd 处理器
 		this.dtdResolver = new BeansDtdResolver();
+		//可插入模式解析器 本地处理解析
 		this.schemaResolver = new PluggableSchemaResolver(classLoader);
 	}
 

@@ -83,28 +83,30 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
 		// 为给定的BeanFactory创建新的XmlBeanDefinitionReader。
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
-		// 适配器模式
+		// 适配器模式BeanDefinitionReader
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// 使用此上下文的资源加载环境配置bean定义读取器。
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
-		// 环境对象
+		// 给reader设置环境对象
 		beanDefinitionReader.setEnvironment(this.getEnvironment());
 		// 资源加载器
 		beanDefinitionReader.setResourceLoader(this);
-		// 实体处理器：xml
+		// 实体处理器：xml;解析xml xsd
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		// 允许子类提供读取器的自定义初始化，
-		// 然后继续实际加载bean定义。
+		// 然后继续实际加载bean定义。 / 适配器模式
 		initBeanDefinitionReader(beanDefinitionReader);
+		// 开始完成BeanDefinition的加载
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 
 	/**
+	 * 初始化用于加载此上下文的bean定义的bean定义读取器。默认实现为空。
 	 * Initialize the bean definition reader used for loading the bean
 	 * definitions of this context. Default implementation is empty.
 	 * <p>Can be overridden in subclasses, e.g. for turning off XML validation
@@ -129,10 +131,12 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see #getResourcePatternResolver
 	 */
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		// 以Resource的方式获得配置文件的资源位置
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}
+		// 以string的方式获得配置文件的位置
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			reader.loadBeanDefinitions(configLocations);

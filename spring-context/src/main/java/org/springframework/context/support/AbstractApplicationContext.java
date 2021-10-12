@@ -164,6 +164,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/** Unique id for this context, if any. */
+	// 此上下文的唯一id（如果有）。
 	private String id = ObjectUtils.identityToString(this);
 
 	/** Display name. */
@@ -1400,6 +1401,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	//---------------------------------------------------------------------
 	// Implementation of ResourcePatternResolver interface
+	// ResourcePatternResolver接口的实现
 	//---------------------------------------------------------------------
 
 	@Override
