@@ -45,6 +45,8 @@ public abstract class BeanDefinitionReaderUtils {
 
 
 	/**
+	 * 为给定的父名称和类名创建一个新的GenericBeanDefinition，如果已经指定了类加载器，则急切地加载bean类。
+	 *
 	 * Create a new GenericBeanDefinition for the given parent name and class name,
 	 * eagerly loading the bean class if a ClassLoader has been specified.
 	 * @param parentName the name of the parent bean, if any
@@ -57,6 +59,7 @@ public abstract class BeanDefinitionReaderUtils {
 	public static AbstractBeanDefinition createBeanDefinition(
 			@Nullable String parentName, @Nullable String className, @Nullable ClassLoader classLoader) throws ClassNotFoundException {
 
+		// 创建bean
 		GenericBeanDefinition bd = new GenericBeanDefinition();
 		bd.setParentName(parentName);
 		if (className != null) {
@@ -160,6 +163,7 @@ public abstract class BeanDefinitionReaderUtils {
 			throws BeanDefinitionStoreException {
 
 		// Register bean definition under primary name.
+		// 在主名称下注册bean定义。
 		String beanName = definitionHolder.getBeanName();
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 

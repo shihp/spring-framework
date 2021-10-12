@@ -85,6 +85,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 	/**
+	 * 此实现根据“Springbeans”XSD解析bean定义
 	 * This implementation parses bean definitions according to the "spring-beans" XSD
 	 * (or DTD, historically).
 	 * <p>Opens a DOM Document; then initializes the default settings
@@ -125,6 +126,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
+		// 委派
+		// 创建了一个单独的解析器来处理解析工作
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
@@ -135,6 +138,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 				// We cannot use Profiles.of(...) since profile expressions are not supported
 				// in XML config. See SPR-12458 for details.
+				// 我们无法使用Profiles.of（…），因为XML配置中不支持配置文件表达式。详见SPR-12458。
 				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Skipped XML bean definition file due to specified profiles [" + profileSpec +
@@ -161,6 +165,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	/**
+	 * 在文档的根级别分析元素：
 	 * Parse the elements at the root level in the document:
 	 * "import", "alias", "bean".
 	 * @param root the DOM root element of the document
@@ -186,6 +191,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 	}
 
+	/**
+	 * 处理默认标签
+	 * @param ele 元素
+	 * @param delegate 处理器
+	 */
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
@@ -203,6 +213,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	/**
+	 * 解析“import”元素并将bean定义从给定资源加载到bean工厂中。
 	 * Parse an "import" element and load the bean definitions
 	 * from the given resource into the bean factory.
 	 */
@@ -299,10 +310,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	/**
+	 * 处理给定的bean元素，解析bean定义并将其注册到注册表。
+	 *
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
+		// BeanDefinitionHolder 是beanDefinition对象的封装类，封装了BeanDefinition，Bean的名字和别名，用它来完成向IOC容器的注册
+		// 得到这个BeanDefinitionHolder就意味着beanDefinition是通过BeanDefinitionDelegate对xml元素按照spring的bean规则进行解析得到的
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
@@ -321,6 +336,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 	/**
+	 * 在开始处理bean定义之前，首先处理任何自定义元素类型，从而允许XML具有可扩展性。此方法是XML的任何其他自定义预处理的自然扩展点。
+	 *
 	 * Allow the XML to be extensible by processing any custom element types first,
 	 * before we start to process the bean definitions. This method is a natural
 	 * extension point for any other custom pre-processing of the XML.

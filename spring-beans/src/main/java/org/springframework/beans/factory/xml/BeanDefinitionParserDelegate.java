@@ -396,6 +396,8 @@ public class BeanDefinitionParserDelegate {
 
 
 	/**
+	 * 解析提供的{@code <bean>}元素。如果在分析过程中出现错误，则可能返回{@code null}。
+	 * 如果在分析过程中出现错误。错误将报告给{@link org.springframework.beans.factory.parsing.ProblemReporter}.
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
@@ -406,15 +408,18 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析Bean对象
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
+		// id
 		String id = ele.getAttribute(ID_ATTRIBUTE);
+		// name
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
-
+		// bean有别名，分割解析
 		List<String> aliases = new ArrayList<>();
 		if (StringUtils.hasLength(nameAttr)) {
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
@@ -431,10 +436,13 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		if (containingBean == null) {
+			// 同名检查
 			checkNameUniqueness(beanName, aliases, ele);
 		}
 
+		// 对bean元素的详细解析
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
+//		beanDefinitionMap beanDefinitionName
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
 				try {
@@ -465,6 +473,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			// BeanDefinitionHolder BeanDefinition的包装类，加上别名数组
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -503,26 +512,38 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
+		// class
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 		String parent = null;
+		// parent
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
+
+			//创建装载bean信息的abstractBeanDefinition对西那个，实际的实现是GenericBeanDefinition
+			// 有类名就可以通过反射进行实例化了
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			// 解析bean标签的各种其他属性
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+			// 设置description信息
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-
+			// 解析元数据
 			parseMetaElements(ele, bd);
+			// 解析 lookup-method属性
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			// 解析 replaced-method属性
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
 
+			// 解析构造函数参数
 			parseConstructorArgElements(ele, bd);
+			// 解析property子元素
 			parsePropertyElements(ele, bd);
+			// 节气qualifier子元素
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
@@ -788,6 +809,7 @@ public class BeanDefinitionParserDelegate {
 				else {
 					try {
 						this.parseState.push(new ConstructorArgumentEntry(index));
+						// 解析属性值
 						Object value = parsePropertyValue(ele, bd, null);
 						ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
 						if (StringUtils.hasLength(typeAttr)) {
@@ -902,6 +924,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 获取属性元素的值。可能是一个列表等。也用于构造函数参数，“propertyName”在本例中为null。
 	 * Get the value of a property element. May be a list etc.
 	 * Also used for constructor arguments, "propertyName" being null in this case.
 	 */
@@ -912,6 +935,7 @@ public class BeanDefinitionParserDelegate {
 				"<constructor-arg> element");
 
 		// Should only have one child element: ref, value, list, etc.
+		// 应该只有一个子元素：ref、value、list等。
 		NodeList nl = ele.getChildNodes();
 		Element subElement = null;
 		for (int i = 0; i < nl.getLength(); i++) {
