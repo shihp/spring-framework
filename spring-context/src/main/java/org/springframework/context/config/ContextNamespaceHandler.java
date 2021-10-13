@@ -21,6 +21,8 @@ import org.springframework.context.annotation.AnnotationConfigBeanDefinitionPars
 import org.springframework.context.annotation.ComponentScanBeanDefinitionParser;
 
 /**
+ *
+ * // xml加载
  * {@link org.springframework.beans.factory.xml.NamespaceHandler}
  * for the '{@code context}' namespace.
  *

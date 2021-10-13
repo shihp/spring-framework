@@ -24,6 +24,8 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.lang.Nullable;
 
 /**
+ * 这些{@link BeanDefinitionParser}实现的基类只需要解析和定义一个<i>单个<i>{@code BeanDefinition}。
+ *
  * Base class for those {@link BeanDefinitionParser} implementations that
  * need to parse and define just a <i>single</i> {@code BeanDefinition}.
  *
@@ -60,16 +62,20 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 */
 	@Override
 	protected final AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
+		// 声称对应的解析类
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
+		// 获取父类的名称
 		String parentName = getParentName(element);
 		if (parentName != null) {
 			builder.getRawBeanDefinition().setParentName(parentName);
 		}
+		// 获取自定义标签中的class，此时会调用自定义解析器
 		Class<?> beanClass = getBeanClass(element);
 		if (beanClass != null) {
 			builder.getRawBeanDefinition().setBeanClass(beanClass);
 		}
 		else {
+			// 若子类没有重写getBeanClass方法则尝试检查子类是否重写getBeanClassName方法
 			String beanClassName = getBeanClassName(element);
 			if (beanClassName != null) {
 				builder.getRawBeanDefinition().setBeanClassName(beanClassName);
@@ -79,12 +85,15 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		BeanDefinition containingBd = parserContext.getContainingBeanDefinition();
 		if (containingBd != null) {
 			// Inner bean definition must receive same scope as containing bean.
+			// 内部bean定义必须接收与包含bean相同的范围。若存在父类，则使用父类的scope属性
 			builder.setScope(containingBd.getScope());
 		}
 		if (parserContext.isDefaultLazyInit()) {
 			// Default-lazy-init applies to custom bean definitions as well.
+			// 默认的lazy init也适用于自定义bean定义。
 			builder.setLazyInit(true);
 		}
+		// 调用自类冲洗的doParse方法进行解析
 		doParse(element, parserContext, builder);
 		return builder.getBeanDefinition();
 	}
