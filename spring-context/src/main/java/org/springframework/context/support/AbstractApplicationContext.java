@@ -57,6 +57,7 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -534,7 +535,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
-			// 初始化bean工厂;配置工厂的标准上下文特征，例如上下文的类加载器和后处理器。
+			// 初始化bean工厂;配置工厂的标准上下文，例如上下文的类加载器和后处理器。
+			// 设置各种属性值
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -677,16 +679,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
+		// 告诉内部bean工厂使用上下文的类加载器等。
 		beanFactory.setBeanClassLoader(getClassLoader());
 		//Bean表达式解析器
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		//添加属性编辑器注册器
+		//添加属性编辑器注册器，主要是对bean的属性等设置管理的一个工具类（参数的解析工具类）
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
 		//使用上下文回调配置bean工厂
-		// 设置忽略的aware接口
+		// 设置忽略的aware接口； ApplicationContextAwareProcessor 迎来完成某些aware对象的注入
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+		// 这些接口的实现是由容器通过set方法进行注入的，所以使用autowire进行注入的时候将这些接口进行忽略
+		// ApplicationContextAwareProcessor 6个接口一样
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -698,12 +703,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		//BeanFactory接口未在普通工厂中注册为可解析类型。
 		// MessageSource registered (and found for autowiring) as a bean.
 		//MessageSource作为bean注册（并找到自动连接）。
+		// 设置介个自动装配的特殊规则，当在进行ioc初始化如果有多个实现，就使用指定的对象进行注入 @Primary
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
 		beanFactory.registerResolvableDependency(ResourceLoader.class, this);
 		beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
+		// 将用于检测内部bean的早期post-processor注册为ApplicationListener。
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
@@ -886,7 +893,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * 完成此上下文bean工厂的初始化，初始化所有剩余的单例bean。
+	 * 完成此上下文bean工厂的初始化，初始化所有剩余的单例 bean。
 	 * Finish the initialization of this context's bean factory,
 	 * initializing all remaining singleton beans.
 	 */

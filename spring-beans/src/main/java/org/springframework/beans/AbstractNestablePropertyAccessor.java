@@ -114,6 +114,8 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	}
 
 	/**
+	 * 为给定对象创建新的访问器。
+	 * registerCustomerEditors...
 	 * Create a new accessor for the given object.
 	 * @param object the object wrapped by this accessor
 	 */
@@ -601,6 +603,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 		}
 	}
 
+	//必要时转换
 	@Nullable
 	protected Object convertForProperty(
 			String propertyName, @Nullable Object oldValue, @Nullable Object newValue, TypeDescriptor td)

@@ -135,6 +135,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	@Nullable
 	private BeanExpressionResolver beanExpressionResolver;
 
+	// 使用Spring转换服务代替PropertyEditor。
 	/** Spring ConversionService to use instead of PropertyEditors. */
 	@Nullable
 	private ConversionService conversionService;
@@ -359,6 +360,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					Object prototypeInstance = null;
 					try {
 						beforePrototypeCreation(beanName);
+						// create bean
 						prototypeInstance = createBean(beanName, mbd, args);
 					}
 					finally {
@@ -1242,6 +1244,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param bw the BeanWrapper to initialize
 	 */
 	protected void initBeanWrapper(BeanWrapper bw) {
+		// 设置集合转换服务
 		bw.setConversionService(getConversionService());
 		registerCustomEditors(bw);
 	}

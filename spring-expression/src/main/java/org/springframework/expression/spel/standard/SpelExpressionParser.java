@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
+ * SpEL解析器。实例是可重用和线程安全的。
  * SpEL parser. Instances are reusable and thread-safe.
  *
  * @author Andy Clement
@@ -43,6 +44,7 @@ public class SpelExpressionParser extends TemplateAwareExpressionParser {
 	}
 
 	/**
+	 * 使用指定的配置创建解析器。
 	 * Create a parser with the specified configuration.
 	 * @param configuration custom configuration options
 	 */

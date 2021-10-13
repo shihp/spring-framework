@@ -33,6 +33,7 @@ package org.springframework.beans;
 public interface PropertyEditorRegistrar {
 
 	/**
+	 * 注册自定义编辑器 (属性编辑器注册表)
 	 * Register custom {@link java.beans.PropertyEditor PropertyEditors} with
 	 * the given {@code PropertyEditorRegistry}.
 	 * <p>The passed-in registry will usually be a {@link BeanWrapper} or a

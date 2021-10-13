@@ -88,6 +88,7 @@ public class SpelParserConfiguration {
 	}
 
 	/**
+	 * 创建一个新的{@code SpelParserConfiguration}实例。
 	 * Create a new {@code SpelParserConfiguration} instance.
 	 * @param compilerMode the compiler mode that parsers using this configuration object should use
 	 * @param compilerClassLoader the ClassLoader to use as the basis for expression compilation

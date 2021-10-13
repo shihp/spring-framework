@@ -75,6 +75,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	}
 
 
+	// invokeAwareInterfaces 设置
 	@Override
 	@Nullable
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -103,6 +104,7 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
+	// 如果自定义类里面实现了这几个接口 设置值的时候是通过BeanPostProcessor前置方法来实现，不是在invokeAwareMethods里面实现的
 	private void invokeAwareInterfaces(Object bean) {
 		if (bean instanceof EnvironmentAware) {
 			((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());

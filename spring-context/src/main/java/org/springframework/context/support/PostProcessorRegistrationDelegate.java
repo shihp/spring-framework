@@ -84,20 +84,31 @@ final class PostProcessorRegistrationDelegate {
 			// 不要在这里初始化FactoryBeans：
 			// 	我们需要让所有常规bean保持未初始化状态，以便让bean factory后处理器应用于它们！
 			// 	在实现PriorityOrdered、Ordered和rest的BeanDefinitionRegistryPostProcessor之间进行分离
+			// 用于保存本次要执行的BeanDefinitionRegistryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
+			// 首先，调用实现 PriorityOrdered 接口的 BeanDefinitionRegistryPostProcessor 实现类。
+			// 找到实现BeanDefinitionRegistryPostProcessor接口的实现类
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+			// 遍历处理所有符合规则的postProcessorNames
 			for (String ppName : postProcessorNames) {
+				// 检车是否实现了PriorityOrdered接口
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+					// 获取名字对应的Bean实例，添加到currentRegistryProcessors中
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
+					// 将要被执行的BFPP名称添加到processedBeans，避免后续重复执行
 					processedBeans.add(ppName);
 				}
 			}
+			// 按照优先级进行排序操作
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
+			// 添加到registryProcessors中，用于最后执行postProcessBeanFactory方法
 			registryProcessors.addAll(currentRegistryProcessors);
+			// 遍历currentRegistryProcessors，执行postProcessBeanDefinitionRegistry方法
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+			// 执行完毕，晴空currentRegistryProcessors
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
@@ -176,6 +187,7 @@ final class PostProcessorRegistrationDelegate {
 			orderedPostProcessors.add(beanFactory.getBean(postProcessorName, BeanFactoryPostProcessor.class));
 		}
 		sortPostProcessors(orderedPostProcessors, beanFactory);
+		// 加载自定义属性编辑器
 		invokeBeanFactoryPostProcessors(orderedPostProcessors, beanFactory);
 
 		// Finally, invoke all other BeanFactoryPostProcessors.

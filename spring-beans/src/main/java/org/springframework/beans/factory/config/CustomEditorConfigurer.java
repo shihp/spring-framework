@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * {@link BeanFactoryPostProcessor}实现，允许方便地注册自定义{@link PropertyEditor property EDITOR}。
  * {@link BeanFactoryPostProcessor} implementation that allows for convenient
  * registration of custom {@link PropertyEditor property editors}.
  *
@@ -99,6 +100,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 
 	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
 
+	//	属性编辑登记员
 	@Nullable
 	private PropertyEditorRegistrar[] propertyEditorRegistrars;
 
@@ -140,6 +142,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 	}
 
 
+	// 注册属性编辑
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		if (this.propertyEditorRegistrars != null) {

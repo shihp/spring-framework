@@ -99,6 +99,7 @@ class TypeConverterDelegate {
 	}
 
 	/**
+	 * 将值转换为所需类型（如有必要，从字符串转换），
 	 * Convert the value to the required type (if necessary from a String),
 	 * for the specified property.
 	 * @param propertyName name of the property
@@ -341,6 +342,7 @@ class TypeConverterDelegate {
 	}
 
 	/**
+	 * 使用给定的属性编辑器将值转换为所需的类型（如果需要，从字符串转换）。
 	 * Convert the value to the required type (if necessary from a String),
 	 * using the given property editor.
 	 * @param oldValue the previous value, if available (may be {@code null})
@@ -410,6 +412,7 @@ class TypeConverterDelegate {
 	}
 
 	/**
+	 * 使用给定的属性编辑器转换给定的文本值。
 	 * Convert the given text value using the given property editor.
 	 * @param oldValue the previous value, if available (may be {@code null})
 	 * @param newTextValue the proposed text value

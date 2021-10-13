@@ -96,6 +96,10 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 	}
 
 	/**
+	 * 使用给定的bean类装入器创建一个新的{@code StandardBeanExpressionResolver}，
+	 * 将其用作表达式编译的基础。
+	 *
+	 * 处理器里面有个解析器，解析器里面有配置类
 	 * Create a new {@code StandardBeanExpressionResolver} with the given bean class loader,
 	 * using it as the basis for expression compilation.
 	 * @param beanClassLoader the factory's bean class loader
