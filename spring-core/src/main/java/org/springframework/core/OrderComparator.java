@@ -74,21 +74,30 @@ public class OrderComparator implements Comparator<Object> {
 	}
 
 	private int doCompare(@Nullable Object o1, @Nullable Object o2, @Nullable OrderSourceProvider sourceProvider) {
+		// 判断是否实现  PriorityOrdered
 		boolean p1 = (o1 instanceof PriorityOrdered);
 		boolean p2 = (o2 instanceof PriorityOrdered);
+		// 01实现 02没有 01排前面
 		if (p1 && !p2) {
 			return -1;
 		}
+		// 02实现 01没有 02排前面
 		else if (p2 && !p1) {
 			return 1;
 		}
 
+		// o1 o2 都实现或者都没有实现 ；
+		// 拿到o1的order值，未实现ordered接口 值为Ordered.LOWEST_PRECEDENCE
 		int i1 = getOrder(o1, sourceProvider);
+		// 拿到o2的order值，未实现ordered接口 值为Ordered.LOWEST_PRECEDENCE
 		int i2 = getOrder(o2, sourceProvider);
 		return Integer.compare(i1, i2);
 	}
 
 	/**
+	 * 确定给定对象的顺序值。
+	 * <p>默认实现使用{@link #findOrder}检查给定的{@link OrderSourceProvider}，并返回到常规的{@link #getOrder（Object）}调用@param obj要检查的对象@返回顺序值，
+	 * 或{@code Ordered.LOWEST_priority}作为回退
 	 * Determine the order value for the given object.
 	 * <p>The default implementation checks against the given {@link OrderSourceProvider}
 	 * using {@link #findOrder} and falls back to a regular {@link #getOrder(Object)} call.

@@ -87,6 +87,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 /**
+ * 解析{@link Configuration}类定义，填充{@link ConfigurationClass}对象的集合（解析单个配置类可能导致任意数量的ConfigurationClass对象，因为一个配置类可以使用{@link import}注释导入另一个配置类）。
+ *
  * Parses a {@link Configuration} class definition, populating a collection of
  * {@link ConfigurationClass} objects (parsing a single Configuration class may result in
  * any number of ConfigurationClass objects because one Configuration class may import

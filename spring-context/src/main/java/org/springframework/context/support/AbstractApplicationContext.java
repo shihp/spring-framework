@@ -542,10 +542,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
 				// 允许在上下文子类中对bean工厂进行后处理;注册后置处理器
+				// 子类覆盖方法做额外的处理，此处我们一般不做任何扩展工作，但是可以查看web中的代码有具体实现
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
 				// 调用在上下文中注册为bean的工厂处理器。
+				// 调用各种beanFactory处理器 处理占位符$
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -714,6 +716,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
+		// 检测LoadTimeWeaver并准备编织（如果发现）。
+		// 增加对AspectJ支持，在java中织入氛围三种方式 1. 编译器织入 2.类加载织入 3. 运行期织入；
+		// 	编译器织入是指在java编译器，采用特殊的编译器，将切面织入到java类中
+		//  类加载器织入，只通过特殊的类加载器，在类字节码加载到jvm时，织入切面
+		//  运行期织入，则是采用cjlib和jdk进行切面的织入
+		// aspectj提供了两种织入方式 1. 特殊的编译器，在编译器，将aspectj语言编写的切面类织入到java类中；2.类加载期织入，就是下面的LoadTimeWeaver
+		// AOP
 		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
 			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
 			// Set a temporary ClassLoader for type matching.
@@ -721,6 +730,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Register default environment beans.
+		// 注册默认环境beand到一级缓存。
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
@@ -750,6 +760,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 获取当前应用上下文的beanFactoryPostProcessors变量的值，并且实例化调用执行所有已经注册的beanFactoryPostProcess
+		// 默认情况下，通过getBeanFactoryProcessors()来获取已经注册的BFPP，但是默认是空的； 如果想扩展 ，怎么处理？？
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

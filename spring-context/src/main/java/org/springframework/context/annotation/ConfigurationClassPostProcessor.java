@@ -66,6 +66,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 后置处理器类 no.1
+ * 1。解析加了@Configuration的配置类
+ * 2。解析@ComponentScan扫描包
+ * 3。解析@ComponentScans扫描包
+ * 4。解析@Import注解
  * {@link BeanFactoryPostProcessor} used for bootstrapping processing of
  * {@link Configuration @Configuration} classes.
  *

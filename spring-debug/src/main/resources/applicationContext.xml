@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aaa="http://www.shihp.org/schema/user"
+	   xmlns:aaa="http://www.shihp.org/schema/user" xmlns:context="http://www.springframework.org/schema/context"
 	   xsi:schemaLocation=
 			   "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-			   http://www.shihp.org/schema/user http://www.shihp.org/schema/user.xsd">
+			   http://www.shihp.org/schema/user http://www.shihp.org/schema/user.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
+	<context:component-scan base-package="com.shihp"/>
 
 	<aaa:user username="ff" email="fff" id="xx" password="fafawefa"/>
 	<!--	追加自定义标签-->
@@ -27,10 +28,14 @@
 <!--	<context:property-placeholder/>-->
 
 
+
+
 	<bean id="person2" class="com.shihp.Person">
 		<constructor-arg index="0" value="111"/>
 		<constructor-arg index="1" value="sss"/>
 	</bean>
+
+	<bean class="com.shihp.MyBeanFactoryPostProcessor"></bean>
 
 
 </beans>
