@@ -66,7 +66,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * 后置处理器类 no.1
+ * 配置类后置处理器类 no.1
  * 1。解析加了@Configuration的配置类
  * 2。解析@ComponentScan扫描包
  * 3。解析@ComponentScans扫描包
